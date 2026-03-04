@@ -77,7 +77,6 @@ class GameScreen(val game: Main) : KtxScreen {
     }
 
     private fun updateLabelPosition() {
-        statusLabel.setAlignment(Align.top or Align.center)
         statusLabel.setPosition(0f, middleLineY - labelHangOffset)
     }
 
@@ -123,6 +122,7 @@ class GameScreen(val game: Main) : KtxScreen {
         stage.addActor(statusLabel)
 
         statusLabel.width = game.viewport.worldWidth
+        statusLabel.setAlignment(Align.top or Align.center)
         updateLabelPosition()
 
         newGame()
