@@ -1,0 +1,10 @@
+game.png
+	size: 2048, 512
+	filter: MipMapLinearLinear, Linear
+	repeat: none
+Ball
+	bounds: 1003, 28, 256, 256
+GameTitle
+	bounds: 1, 11, 1000, 273
+Paddle
+	bounds: 1, 1, 8, 8
