@@ -9,6 +9,7 @@ import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ktx.graphics.use
 import ktx.scene2d.*
+import com.badlogic.gdx.utils.Align
 
 class GameScreen(val game: Main) : KtxScreen {
     private val echoClient = EchoClient("10.0.2.2", 4300)
@@ -22,12 +23,22 @@ class GameScreen(val game: Main) : KtxScreen {
     private val playerScoreLabel: Label
     private val gameOverLabel: Label
 
+    private val statusLabel: Label
+
+    private val middleLineY get() = game.viewport.worldHeight * 0.5f
+    private val labelHangOffset = 2.5f
+
     private val gameWorld: GameWorld
 
     init {
         val labelStyle = Label.LabelStyle(game.font, Color.WHITE)
 
         gameOverLabel = Label("You Won", labelStyle)
+
+        statusLabel = Label(serverMessage, labelStyle)
+        statusLabel.setFontScale(0.02f)
+        statusLabel.wrap = true
+        statusLabel.setAlignment(Align.center)
 
         root = scene2d.table {
             setFillParent(true)
@@ -48,6 +59,7 @@ class GameScreen(val game: Main) : KtxScreen {
             }).expand().top().fillX().padTop(0.75f)
         }
         stage.addActor(root)
+        stage.addActor(statusLabel)
 
         gameWorld = GameWorld(this)
     }
@@ -64,6 +76,11 @@ class GameScreen(val game: Main) : KtxScreen {
         playerScoreLabel.setText(playerScore.toString())
     }
 
+    private fun updateLabelPosition() {
+        statusLabel.setAlignment(Align.top or Align.center)
+        statusLabel.setPosition(0f, middleLineY - labelHangOffset)
+    }
+
     override fun render(delta: Float) {
         clearScreen(Constants.BACKGROUND_COLOR.r, Constants.BACKGROUND_COLOR.g, Constants.BACKGROUND_COLOR.b)
 
@@ -71,7 +88,9 @@ class GameScreen(val game: Main) : KtxScreen {
             val message = "${Gdx.input.x}, ${Gdx.input.y}"
 
             echoClient.connectAndSend(message) { response ->
-                serverMessage = response
+                statusLabel.setText(response)
+
+                updateLabelPosition()
             }
         }
 
@@ -92,7 +111,6 @@ class GameScreen(val game: Main) : KtxScreen {
                 }
             }
             gameWorld.render(batch, delta)
-            game.font.draw(batch, serverMessage, 1f, 1f)
         }
 
         stage.act(delta)
@@ -102,6 +120,11 @@ class GameScreen(val game: Main) : KtxScreen {
     override fun show() {
         stage.clear()
         stage.addActor(root)
+        stage.addActor(statusLabel)
+
+        statusLabel.width = game.viewport.worldWidth
+        updateLabelPosition()
+
         newGame()
     }
 
