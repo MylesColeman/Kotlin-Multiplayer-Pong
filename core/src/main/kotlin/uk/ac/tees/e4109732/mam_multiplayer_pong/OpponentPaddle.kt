@@ -1,21 +1,10 @@
 package uk.ac.tees.e4109732.mam_multiplayer_pong
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion
 import com.badlogic.gdx.utils.viewport.Viewport
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import ktx.async.KtxAsync
-import ktx.async.onRenderingThread
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.Socket
 
 class OpponentPaddle(private val viewport: Viewport, private val texture: AtlasRegion?) {
-    var socket: Socket? = null
-        private set
-
     private var centreX = 0f
     private var targetX = 0f
     private var leftX = 0f
@@ -25,29 +14,8 @@ class OpponentPaddle(private val viewport: Viewport, private val texture: AtlasR
         reset()
     }
 
-    fun startNetworkListener(host: String, port: Int) {
-        KtxAsync.launch(Dispatchers.IO) {
-            try {
-                socket = Socket(host, port)
-                val inputStream = socket!!.getInputStream()
-                val idBuffer = ByteArray(4)
-                inputStream.read(idBuffer)
-                val reader = BufferedReader(InputStreamReader(inputStream))
-
-                while (true) {
-                    val line = reader.readLine() ?: break
-                    val newX = line.toFloatOrNull()
-
-                    if (newX != null) {
-                        onRenderingThread {
-                            targetX = newX
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                Gdx.app.error("Network", "Lost connection: ${e.message}")
-            }
-        }
+    fun updateTargetX(newX: Float) {
+        targetX = newX
     }
 
     fun draw(batch: SpriteBatch, delta: Float) {

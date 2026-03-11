@@ -3,7 +3,6 @@ package uk.ac.tees.e4109732.mam_multiplayer_pong
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion
-import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.viewport.Viewport
 import kotlinx.coroutines.Dispatchers
@@ -59,7 +58,7 @@ class Paddle(private val viewport: Viewport, private val texture: AtlasRegion?) 
             KtxAsync.launch(Dispatchers.IO) {
                 try {
                     val out = currentSocket.getOutputStream()
-                    val message = "$centreX\n"
+                    val message = "Paddle: $centreX\n"
                     out.write(message.toByteArray())
                 } catch (e: Exception) {
                     Gdx.app.error("Network", "Lost connection: ${e.message}")
@@ -68,7 +67,7 @@ class Paddle(private val viewport: Viewport, private val texture: AtlasRegion?) 
         }
     }
 
-    fun hitTest(ball: Ball): Boolean {
+    /*fun hitTest(ball: Ball): Boolean {
         val sectionWidth = Constants.PADDLE_WIDTH * 0.3f
 
         if (abs(ball.y - y) > 1.15f) return false
@@ -97,7 +96,7 @@ class Paddle(private val viewport: Viewport, private val texture: AtlasRegion?) 
             return true
         }
         return false
-    }
+    }*/
 
     fun reset() {
         centreX = viewport.worldWidth * 0.5f
