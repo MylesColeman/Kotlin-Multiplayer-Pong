@@ -72,4 +72,10 @@ class Paddle(private val viewport: Viewport, private val texture: AtlasRegion?) 
         y = 0.2f
         filteredAccelX = 0f
     }
+
+    fun resetTo(newX: Float) {
+        centreX = newX
+        leftX = centreX - Constants.PADDLE_WIDTH * 0.5f
+        filteredAccelX = 0f
+    }
 }

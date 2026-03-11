@@ -38,4 +38,10 @@ class OpponentPaddle(private val viewport: Viewport, private val texture: AtlasR
         centreX = viewport.worldWidth * 0.5f
         y = viewport.worldHeight - 1.2f
     }
+
+    fun resetTo(newX: Float) {
+        targetX = newX
+        centreX = newX
+        leftX = centreX - Constants.PADDLE_WIDTH * 0.5f
+    }
 }

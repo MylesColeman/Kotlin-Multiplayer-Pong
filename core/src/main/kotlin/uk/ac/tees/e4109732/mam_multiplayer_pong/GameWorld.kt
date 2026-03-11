@@ -12,12 +12,14 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.Socket
 
-class GameWorld(gameScreen: GameScreen) {
+class GameWorld(private val gameScreen: GameScreen) {
     enum class GameState {
-        PLAYING,
+        PLAYING
     }
 
     private var state = GameState.PLAYING
+    private var playerScore = 0
+    private var opponentScore = 0
 
     private val viewport: Viewport = gameScreen.game.viewport
     private val paddleTex: AtlasRegion? = gameScreen.game.atlas?.findRegion("Paddle")
@@ -46,7 +48,7 @@ class GameWorld(gameScreen: GameScreen) {
                 inputStream.read(idBuffer)
                 playerID = idBuffer[0].toInt()
 
-                while (state == GameState.PLAYING) {
+                while (true) {
                     val line = reader.readLine() ?: break
 
                     onRenderingThread {
@@ -71,6 +73,29 @@ class GameWorld(gameScreen: GameScreen) {
                                     opponentPaddle.updateTargetX(finalX)
                                 }
                             }
+                            line.startsWith("Score: ") -> {
+                                val scores = line.substringAfter("Score: ").split(", ")
+                                var s0 = scores[0].toInt()
+                                var s1 = scores[1].toInt()
+
+                                if (playerID == 1) {
+                                    val temp = s0
+                                    s0 = s1
+                                    s1 = temp
+                                }
+
+                                val resultText = if (s0 > playerScore) "You Won!" else "You Lost!"
+
+                                playerScore = s0
+                                opponentScore = s1
+
+                                gameScreen.setGameOverState(playerScore, opponentScore, resultText)
+                            }
+                            line.startsWith("Paddle Reset: ") -> {
+                                val midX = line.substringAfter("Paddle Reset: ").toFloat()
+                                paddle.resetTo(midX)
+                                opponentPaddle.resetTo(midX)
+                            }
                         }
                     }
                 }
@@ -81,8 +106,6 @@ class GameWorld(gameScreen: GameScreen) {
     }
 
     fun render(batch: SpriteBatch, delta: Float) {
-        if (state != GameState.PLAYING) return
-
         ball.draw(batch, delta)
         paddle.draw(batch, delta)
         paddle.updateNetwork(this.socket)
