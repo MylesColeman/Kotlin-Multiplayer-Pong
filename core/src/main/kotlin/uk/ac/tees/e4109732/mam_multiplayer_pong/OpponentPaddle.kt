@@ -17,6 +17,7 @@ class OpponentPaddle(private val viewport: Viewport, private val texture: AtlasR
         private set
 
     private var centreX = 0f
+    private var targetX = 0f
     private var leftX = 0f
     private var y = Constants.WORLD_HEIGHT - 1.2f
 
@@ -39,7 +40,7 @@ class OpponentPaddle(private val viewport: Viewport, private val texture: AtlasR
 
                     if (newX != null) {
                         onRenderingThread {
-                            centreX = newX
+                            targetX = newX
                         }
                     }
                 }
@@ -49,13 +50,13 @@ class OpponentPaddle(private val viewport: Viewport, private val texture: AtlasR
         }
     }
 
-    fun draw(batch: SpriteBatch) {
+    fun draw(batch: SpriteBatch, delta: Float) {
         leftX = centreX - Constants.PADDLE_WIDTH * 0.5f
         if (leftX < 0f) leftX = 0f
         else if (leftX > viewport.worldWidth - Constants.PADDLE_WIDTH)
             leftX = viewport.worldWidth - Constants.PADDLE_WIDTH
 
-        centreX = leftX + Constants.PADDLE_WIDTH * 0.5f
+        centreX += (targetX - centreX) * delta * Constants.PADDLE_SPEED
 
         texture?.let {
             batch.setColor(Constants.OPPONENT_PADDLE_COLOR)
@@ -68,6 +69,7 @@ class OpponentPaddle(private val viewport: Viewport, private val texture: AtlasR
     //}
 
     fun reset() {
+        targetX = viewport.worldWidth * 0.5f
         centreX = viewport.worldWidth * 0.5f
         y = viewport.worldHeight - 1.2f
     }

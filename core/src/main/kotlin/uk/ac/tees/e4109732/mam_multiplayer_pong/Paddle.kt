@@ -52,7 +52,7 @@ class Paddle(private val viewport: Viewport, private val texture: AtlasRegion?) 
         }
     }
 
-    fun updateNetwork(socket : Socket?) {
+    fun updateNetwork(socket: Socket?) {
         val currentSocket = socket ?: return
 
         if (Gdx.input.isTouched || abs(Gdx.input.accelerometerX) > 0.1f) {

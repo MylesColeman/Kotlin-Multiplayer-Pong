@@ -31,10 +31,10 @@ class GameWorld(private val gameScreen: GameScreen) {
     fun render(batch: SpriteBatch, delta: Float) {
         if (state != GameState.PLAYING) return
 
-        ball.draw(batch, delta)
+        //ball.draw(batch, delta)
         paddle.draw(batch, delta)
         paddle.updateNetwork(opponentPaddle.socket)
-        opponentPaddle.draw(batch)
+        opponentPaddle.draw(batch, delta)
         paddle.hitTest(ball)
 
         if (ball.y < -1f || ball.y > viewport.worldHeight + 0.5f) {
