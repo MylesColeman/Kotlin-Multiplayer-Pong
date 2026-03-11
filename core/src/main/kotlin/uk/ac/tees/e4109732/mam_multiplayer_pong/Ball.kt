@@ -3,7 +3,6 @@ package uk.ac.tees.e4109732.mam_multiplayer_pong
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion
 
-
 class Ball(private val texture: AtlasRegion?) {
     var x = 0f
     var y = 0f

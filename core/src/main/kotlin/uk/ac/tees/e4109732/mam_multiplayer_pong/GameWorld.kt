@@ -3,7 +3,6 @@ package uk.ac.tees.e4109732.mam_multiplayer_pong
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion
-import com.badlogic.gdx.utils.Timer
 import com.badlogic.gdx.utils.viewport.Viewport
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,14 +12,10 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.Socket
 
-class GameWorld(private val gameScreen: GameScreen) {
+class GameWorld(gameScreen: GameScreen) {
     enum class GameState {
         PLAYING,
-        GAME_OVER
     }
-
-    private var playerScore = 0
-    private var opponentScore = 0
 
     private var state = GameState.PLAYING
 
@@ -93,23 +88,6 @@ class GameWorld(private val gameScreen: GameScreen) {
         paddle.draw(batch, delta)
         paddle.updateNetwork(this.socket)
         opponentPaddle.draw(batch, delta)
-        //paddle.hitTest(ball)
-
-        if (ball.y < -1f || ball.y > viewport.worldHeight + 0.5f) {
-            state = GameState.GAME_OVER
-
-            if (ball.y < -1) {
-                gameScreen.setGameOverState(playerScore, ++opponentScore, "You Lost")
-            }
-            else {
-                gameScreen.setGameOverState(++playerScore, opponentScore, "You Won")
-            }
-            Timer.schedule(object : Timer.Task() {
-                override fun run() {
-                    gameScreen.newGame()
-                }
-            }, 1.25f)
-        }
     }
 
     fun reset() {

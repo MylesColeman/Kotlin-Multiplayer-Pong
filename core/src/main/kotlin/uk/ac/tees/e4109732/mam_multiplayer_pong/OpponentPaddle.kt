@@ -33,9 +33,6 @@ class OpponentPaddle(private val viewport: Viewport, private val texture: AtlasR
         }
     }
 
-    //fun hitTest(ball: Ball): Boolean {
-    //}
-
     fun reset() {
         targetX = viewport.worldWidth * 0.5f
         centreX = viewport.worldWidth * 0.5f
