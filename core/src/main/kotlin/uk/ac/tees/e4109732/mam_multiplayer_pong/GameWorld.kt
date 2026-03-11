@@ -61,8 +61,7 @@ class GameWorld(gameScreen: GameScreen) {
                                     serverY = Constants.WORLD_HEIGHT - serverY
                                 }
 
-                                ball.x = serverX
-                                ball.y = serverY
+                                ball.updateServerPosition(serverX, serverY)
                             }
                             line.startsWith("Paddle: ") -> {
                                 val rawX = line.substringAfter("Paddle: ").toFloatOrNull()
