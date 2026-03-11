@@ -6,6 +6,10 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.viewport.Viewport
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import ktx.async.KtxAsync
+import java.net.Socket
 import kotlin.math.abs
 
 class Paddle(private val viewport: Viewport, private val texture: AtlasRegion?) {
@@ -45,6 +49,22 @@ class Paddle(private val viewport: Viewport, private val texture: AtlasRegion?) 
             batch.setColor(Constants.PADDLE_COLOR)
             batch.draw(it, leftX, y, Constants.PADDLE_WIDTH, 1f)
             batch.setColor(1f, 1f, 1f, 1f)
+        }
+    }
+
+    fun updateNetwork(socket : Socket?) {
+        val currentSocket = socket ?: return
+
+        if (Gdx.input.isTouched || abs(Gdx.input.accelerometerX) > 0.1f) {
+            KtxAsync.launch(Dispatchers.IO) {
+                try {
+                    val out = currentSocket.getOutputStream()
+                    val message = "$centreX\n"
+                    out.write(message.toByteArray())
+                } catch (e: Exception) {
+                    Gdx.app.error("Network", "Lost connection: ${e.message}")
+                }
+            }
         }
     }
 

@@ -22,12 +22,19 @@ class GameWorld(private val gameScreen: GameScreen) {
 
     private val ball = Ball(viewport, ballTex)
     private val paddle = Paddle(viewport, paddleTex)
+    private val opponentPaddle = OpponentPaddle(viewport, paddleTex)
+
+    init {
+        opponentPaddle.startNetworkListener("10.0.2.2", 4300)
+    }
 
     fun render(batch: SpriteBatch, delta: Float) {
         if (state != GameState.PLAYING) return
 
         ball.draw(batch, delta)
         paddle.draw(batch, delta)
+        paddle.updateNetwork(opponentPaddle.socket)
+        opponentPaddle.draw(batch)
         paddle.hitTest(ball)
 
         if (ball.y < -1f || ball.y > viewport.worldHeight + 0.5f) {
@@ -50,6 +57,7 @@ class GameWorld(private val gameScreen: GameScreen) {
     fun reset() {
         ball.reset()
         paddle.reset()
+        opponentPaddle.reset()
         state = GameState.PLAYING
     }
 }

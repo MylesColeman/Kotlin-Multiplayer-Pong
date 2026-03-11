@@ -1,6 +1,5 @@
 package uk.ac.tees.e4109732.mam_multiplayer_pong
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Label
@@ -9,12 +8,8 @@ import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ktx.graphics.use
 import ktx.scene2d.*
-import com.badlogic.gdx.utils.Align
 
 class GameScreen(val game: Main) : KtxScreen {
-    private val echoClient = EchoClient("10.0.2.2", 4300)
-    private var serverMessage = "Tap to send data"
-
     private val root: Table
     private val paddleRegion = game.atlas?.findRegion("Paddle")
 
@@ -23,22 +18,12 @@ class GameScreen(val game: Main) : KtxScreen {
     private val playerScoreLabel: Label
     private val gameOverLabel: Label
 
-    private val statusLabel: Label
-
-    private val middleLineY get() = game.viewport.worldHeight * 0.5f
-    private val labelHangOffset = 2.5f
-
     private val gameWorld: GameWorld
 
     init {
         val labelStyle = Label.LabelStyle(game.font, Color.WHITE)
 
         gameOverLabel = Label("You Won", labelStyle)
-
-        statusLabel = Label(serverMessage, labelStyle)
-        statusLabel.setFontScale(0.02f)
-        statusLabel.wrap = true
-        statusLabel.setAlignment(Align.center)
 
         root = scene2d.table {
             setFillParent(true)
@@ -59,7 +44,6 @@ class GameScreen(val game: Main) : KtxScreen {
             }).expand().top().fillX().padTop(0.75f)
         }
         stage.addActor(root)
-        stage.addActor(statusLabel)
 
         gameWorld = GameWorld(this)
     }
@@ -76,22 +60,8 @@ class GameScreen(val game: Main) : KtxScreen {
         playerScoreLabel.setText(playerScore.toString())
     }
 
-    private fun updateLabelPosition() {
-        statusLabel.setPosition(0f, middleLineY - labelHangOffset)
-    }
-
     override fun render(delta: Float) {
         clearScreen(Constants.BACKGROUND_COLOR.r, Constants.BACKGROUND_COLOR.g, Constants.BACKGROUND_COLOR.b)
-
-        if (Gdx.input.justTouched()) {
-            val message = "${Gdx.input.x}, ${Gdx.input.y}"
-
-            echoClient.connectAndSend(message) { response ->
-                statusLabel.setText(response)
-
-                updateLabelPosition()
-            }
-        }
 
         game.viewport.apply()
         game.batch.projectionMatrix = game.viewport.camera.combined
@@ -119,11 +89,6 @@ class GameScreen(val game: Main) : KtxScreen {
     override fun show() {
         stage.clear()
         stage.addActor(root)
-        stage.addActor(statusLabel)
-
-        statusLabel.width = game.viewport.worldWidth
-        statusLabel.setAlignment(Align.top or Align.center)
-        updateLabelPosition()
 
         newGame()
     }
