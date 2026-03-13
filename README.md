@@ -1,5 +1,12 @@
 # Multiplayer Pong
 
+This repository is a refined implementation of the classic Pong, developed to master **Kotlin**-specific patterns and mobile game architecture as part of my **Mobile and Multiplayer** module at **Teesside University**.
+
+*This repository will eventually be merged into a comprehensive Mobile & Multiplayer game demo collection.*
+
+---
+
+
 A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
 
 This project was generated with a Kotlin project template that includes Kotlin application launchers and [KTX](https://libktx.github.io/) utilities.
