@@ -14,7 +14,8 @@ import java.net.Socket
 
 class GameWorld(private val gameScreen: GameScreen) {
     enum class GameState {
-        PLAYING
+        PLAYING,
+        GAME_OVER
     }
 
     private var state = GameState.PLAYING
@@ -90,6 +91,7 @@ class GameWorld(private val gameScreen: GameScreen) {
                                 opponentScore = s1
 
                                 gameScreen.setGameOverState(playerScore, opponentScore, resultText)
+                                state = GameState.GAME_OVER
                             }
                             line.startsWith("Paddle Reset: ") -> {
                                 val midX = line.substringAfter("Paddle Reset: ").toFloat()

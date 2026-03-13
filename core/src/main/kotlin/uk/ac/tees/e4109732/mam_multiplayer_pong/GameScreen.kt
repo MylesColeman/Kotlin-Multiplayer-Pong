@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.utils.Timer
 import ktx.app.KtxScreen
 import ktx.app.clearScreen
 import ktx.graphics.use
@@ -58,6 +59,12 @@ class GameScreen(val game: Main) : KtxScreen {
         gameOverLabel.setText(resultText)
         opponentScoreLabel.setText(opponentScore.toString())
         playerScoreLabel.setText(playerScore.toString())
+
+        Timer.schedule(object : Timer.Task() {
+            override fun run() {
+                newGame()
+            }
+        }, 1.25f)
     }
 
     override fun render(delta: Float) {
